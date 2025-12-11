@@ -10,6 +10,10 @@ import Welcome from "./pages/Welcome";
 import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 import { UserProvider } from "./context/UserContext";
+import About from "./pages/About";
+import NewDrops from "./pages/NewDrops";
+import Trending from "./pages/Trending";
+import Sale from "./pages/Sale";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +30,10 @@ const App = () => (
             <Route path="/create-account" element={<CreateAccount />} />
             <Route path="/welcome" element={<Welcome />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/newdrops" element={<NewDrops />} />
+            <Route path="/trending" element={<Trending />} />
+            <Route path="/sale" element={<Sale />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

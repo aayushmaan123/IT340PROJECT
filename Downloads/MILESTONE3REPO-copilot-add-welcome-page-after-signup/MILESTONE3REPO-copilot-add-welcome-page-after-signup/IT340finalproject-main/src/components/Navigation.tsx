@@ -39,10 +39,10 @@ export function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <NavLink href="#new">New Drops</NavLink>
-            <NavLink href="#trending">Trending</NavLink>
-            <NavLink href="#sale">Sale</NavLink>
-            <NavLink href="#about">About</NavLink>
+            <NavLink href="/newdrops">New Drops</NavLink>
+            <NavLink href="/trending">Trending</NavLink>
+            <NavLink href="/sale">Sale</NavLink>
+            <NavLink href="/about">About</NavLink>
           </div>
 
           {/* Right Side Icons & Buttons */}
@@ -91,10 +91,10 @@ export function Navigation() {
             className="md:hidden border-t border-border py-4"
           >
             <div className="flex flex-col gap-4">
-              <NavLink href="#new" mobile>New Drops</NavLink>
-              <NavLink href="#trending" mobile>Trending</NavLink>
-              <NavLink href="#sale" mobile>Sale</NavLink>
-              <NavLink href="#about" mobile>About</NavLink>
+              <NavLink href="/newdrops" mobile>New Drops</NavLink>
+              <NavLink href="/trending" mobile>Trending</NavLink>
+              <NavLink href="/sale" mobile>Sale</NavLink>
+              <NavLink href="/about" mobile>About</NavLink>
               <div className="flex gap-2 pt-4 border-t border-border">
                 <Link to="/login" className="flex-1">
                   <Button
