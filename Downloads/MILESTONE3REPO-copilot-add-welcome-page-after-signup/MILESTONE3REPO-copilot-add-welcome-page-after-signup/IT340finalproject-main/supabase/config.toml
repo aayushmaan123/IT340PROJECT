@@ -1,0 +1,7 @@
+project_id = "kjjowsrjemerkxthlmsg"
+
+[functions.send-2fa-code]
+verify_jwt = false
+
+[functions.verify-2fa-code]
+verify_jwt = false
