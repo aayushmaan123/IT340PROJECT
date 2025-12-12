@@ -14,6 +14,8 @@ import About from "./pages/About";
 import NewDrops from "./pages/NewDrops";
 import Trending from "./pages/Trending";
 import Sale from "./pages/Sale";
+import Cart from "./pages/Cart";
+import CartPage from "./pages/CartPage";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,7 @@ const App = () => (
             <Route path="/newdrops" element={<NewDrops />} />
             <Route path="/trending" element={<Trending />} />
             <Route path="/sale" element={<Sale />} />
+            <Route path="/cart" element={<CartPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

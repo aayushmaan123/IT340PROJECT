@@ -2,12 +2,13 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, User, Search, Menu, Footprints } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '@/context/UserContext';
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { username, signOut } = useUser();
+  const navigate = useNavigate();
 
   return (
     <motion.nav
@@ -48,7 +49,7 @@ export function Navigation() {
           {/* Right Side Icons & Buttons */}
           <div className="flex items-center gap-3">
             <IconButton icon={Search} label="Search" />
-            <IconButton icon={ShoppingCart} label="Cart" />
+            <IconButton icon={ShoppingCart} label="Cart" onClick={() => navigate('/cart')} />
             {!username && (
               <div className="hidden md:flex items-center gap-2 ml-2">
                 <Link to="/login">
@@ -133,7 +134,7 @@ function NavLink({ href, children, mobile }: { href: string; children: React.Rea
   );
 }
 
-function IconButton({ icon: Icon, label }: { icon: any; label: string }) {
+function IconButton({ icon: Icon, label, onClick }: { icon: any; label: string; onClick?: () => void }) {
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
@@ -141,6 +142,7 @@ function IconButton({ icon: Icon, label }: { icon: any; label: string }) {
       transition={{ duration: 0.15 }}
       className="p-2 hover:bg-secondary rounded-md transition-colors duration-200"
       aria-label={label}
+      onClick={onClick}
     >
       <Icon className="w-5 h-5" />
     </motion.button>
