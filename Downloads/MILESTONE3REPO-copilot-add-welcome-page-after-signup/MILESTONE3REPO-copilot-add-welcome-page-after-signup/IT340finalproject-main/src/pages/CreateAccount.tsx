@@ -92,8 +92,6 @@ const CreateAccount = () => {
         description: "We've sent you a confirmation link. Please check your email to verify your account."
       });
       navigate('/verify-email', { state: { email: formData.email } });
-    }
-  };
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
