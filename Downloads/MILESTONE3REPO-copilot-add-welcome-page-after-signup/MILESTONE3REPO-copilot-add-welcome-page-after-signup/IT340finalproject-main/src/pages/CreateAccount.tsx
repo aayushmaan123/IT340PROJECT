@@ -87,12 +87,11 @@ const CreateAccount = () => {
           localStorage.setItem('token', data.token);
           navigate('/welcome', { state: { username: data.username } });
         } else {
-          alert(data.message || 'Signup failed');
-        }
-      } catch (err) {
-        alert('Network error. Make sure your backend is running at http://localhost:5000 and MongoDB is started.');
-      }
-      setLoading(false);
+          toast({
+        title: "Check Your Email",
+        description: "We've sent you a confirmation link. Please check your email to verify your account."
+      });
+      navigate('/verify-email', { state: { email: formData.email } });
     }
   };
 
