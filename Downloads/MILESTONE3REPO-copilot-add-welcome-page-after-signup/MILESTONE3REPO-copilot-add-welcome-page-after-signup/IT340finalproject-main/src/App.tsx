@@ -16,6 +16,7 @@ import Trending from "./pages/Trending";
 import Sale from "./pages/Sale";
 import Cart from "./pages/Cart";
 import CartPage from "./pages/CartPage";
+import VerifyEmail from "./pages/VerifyEmail";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/trending" element={<Trending />} />
             <Route path="/sale" element={<Sale />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

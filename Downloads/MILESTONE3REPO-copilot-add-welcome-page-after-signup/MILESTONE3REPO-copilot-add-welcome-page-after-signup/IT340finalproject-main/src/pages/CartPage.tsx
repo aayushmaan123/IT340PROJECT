@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const CartPage = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [removing, setRemoving] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -23,6 +25,23 @@ const CartPage = () => {
       });
   }, []);
 
+  const handleRemove = async (productId: string) => {
+    setRemoving(productId);
+    const token = localStorage.getItem('token');
+    await fetch('http://localhost:5000/api/cart/remove', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ productId })
+    });
+    setTimeout(() => {
+      setItems(items => items.filter(item => item.productId._id !== productId));
+      setRemoving(null);
+    }, 400); // match animation duration
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
@@ -34,15 +53,35 @@ const CartPage = () => {
           <div>Your cart is empty.</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {items.map((item, idx) => (
-              <div key={idx} className="bg-card border border-border rounded-lg shadow-elegant p-4 flex flex-col items-center">
-                <img src={item.productId.image || '/images/shoes/placeholder.jpg'} alt={item.productId.name} className="w-40 h-40 object-cover mb-4 rounded-md" />
-                <div className="font-semibold text-lg mb-2">{item.productId.name}</div>
-                <div className="text-primary text-xl font-bold mb-2">${item.productId.price}</div>
-                <div className="mb-2">Quantity: {item.quantity}</div>
-                <Button>Buy Now</Button>
-              </div>
-            ))}
+            <AnimatePresence>
+              {items.map((item, idx) => (
+                <motion.div
+                  key={item.productId._id}
+                  initial={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 40 }}
+                  transition={{ duration: 0.4 }}
+                  className="bg-card border border-border rounded-lg shadow-elegant p-4 flex flex-col items-center relative"
+                >
+                  <img src={item.productId.image || '/images/shoes/placeholder.jpg'} alt={item.productId.name} className="w-40 h-40 object-cover mb-4 rounded-md" />
+                  <div className="font-semibold text-lg mb-2">{item.productId.name}</div>
+                  <div className="text-primary text-xl font-bold mb-2">${item.productId.price}</div>
+                  <div className="mb-2">Quantity: {item.quantity}</div>
+                  <div className="flex gap-2 w-full justify-center">
+                    <Button>Buy Now</Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleRemove(item.productId._id)}
+                      disabled={removing === item.productId._id}
+                      className="transition-all duration-300"
+                    >
+                      {removing === item.productId._id ? 'Removing...' : 'Remove'}
+                    </Button>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </main>

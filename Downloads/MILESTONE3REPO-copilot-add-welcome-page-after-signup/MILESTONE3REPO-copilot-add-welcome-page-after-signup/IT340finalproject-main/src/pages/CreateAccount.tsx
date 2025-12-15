@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LoginInput } from '@/components/ui/login-form';
 import sneakerBg from '@/assets/sneaker-4.jpg';
+import { toast } from 'sonner';
 
 const CreateAccount = () => {
   const navigate = useNavigate();
@@ -87,11 +88,16 @@ const CreateAccount = () => {
           localStorage.setItem('token', data.token);
           navigate('/welcome', { state: { username: data.username } });
         } else {
-          toast({
-        title: "Check Your Email",
-        description: "We've sent you a confirmation link. Please check your email to verify your account."
-      });
+          toast("Check Your Email. We've sent you a confirmation link. Please check your email to verify your account.");
       navigate('/verify-email', { state: { email: formData.email } });
+        }
+      } catch (error) {
+        console.error('Error during signup:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
