@@ -11,7 +11,7 @@ const Cart = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return setLoading(false);
-    fetch('http://192.168.50.128:5000/api/cart', {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
       headers: { 'Authorization': 'Bearer ' + token },
     })
       .then(res => res.json())
