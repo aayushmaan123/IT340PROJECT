@@ -7,7 +7,7 @@ import AddToCartButton from '@/components/AddToCartButton';
 const NewDrops = () => {
 	const [products, setProducts] = useState([]);
 	useEffect(() => {
-		fetch('http://localhost:5000/api/products')
+		fetch('http://192.168.50.128:5000/api/products')
 			.then((res) => res.json())
 			.then((data) => setProducts(data));
 	}, []);

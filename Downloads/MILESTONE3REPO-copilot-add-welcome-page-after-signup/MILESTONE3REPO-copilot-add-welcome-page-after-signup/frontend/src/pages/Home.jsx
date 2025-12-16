@@ -11,7 +11,7 @@ function Home() {
       window.location.href = '/login';
       return;
     }
-    fetch('http://localhost:3000/api/auth/me', {
+    fetch('http://192.168.50.128:5000/api/auth/me', {
       headers: { 'Authorization': 'Bearer ' + token },
     })
       .then(res => res.json())

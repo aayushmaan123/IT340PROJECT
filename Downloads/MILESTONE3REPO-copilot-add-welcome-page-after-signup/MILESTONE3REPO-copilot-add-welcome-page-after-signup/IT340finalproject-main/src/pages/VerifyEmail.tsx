@@ -27,7 +27,7 @@ const VerifyEmail = () => {
     try {
       // Get userId from Supabase (or backend) if needed
       const userId = localStorage.getItem('user_id');
-      const res = await fetch('http://localhost:54321/functions/v1/verify-2fa-code', {
+      const res = await fetch('http://192.168.50.128:5000/functions/v1/verify-2fa-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, code })

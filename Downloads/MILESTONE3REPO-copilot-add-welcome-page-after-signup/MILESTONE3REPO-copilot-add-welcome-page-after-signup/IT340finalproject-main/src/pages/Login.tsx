@@ -21,7 +21,7 @@ const Login = () => {
     e.preventDefault();
     setApiMessage('');
     // Send login request to backend
-    const res = await fetch('http://localhost:5000/api/auth/login', {
+    const res = await fetch('http://192.168.50.128:5000/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)

@@ -10,7 +10,7 @@ const AddToCartButton = ({ productId }) => {
       alert('Please log in to add to cart');
       return;
     }
-    await fetch('http://localhost:5000/api/cart/add', {
+    await fetch('http://192.168.50.129:5000/api/cart/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

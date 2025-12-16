@@ -15,7 +15,7 @@ const CartPage = () => {
       window.location.href = '/login';
       return;
     }
-    fetch('http://localhost:5000/api/cart', {
+    fetch('http://192.168.50.128:5000/api/cart', {
       headers: { 'Authorization': 'Bearer ' + token }
     })
       .then(res => res.json())
@@ -28,7 +28,7 @@ const CartPage = () => {
   const handleRemove = async (productId: string) => {
     setRemoving(productId);
     const token = localStorage.getItem('token');
-    await fetch('http://localhost:5000/api/cart/remove', {
+    await fetch('http://192.168.50.128:5000/api/cart/remove', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
