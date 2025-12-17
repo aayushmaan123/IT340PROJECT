@@ -4,11 +4,17 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import placeholder from '/placeholder.svg';
 
+// Extend the Window interface to include refreshCart
+declare global {
+  interface Window {
+    refreshCart: () => void;
+  }
+}
+
 const Cart = () => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+  const fetchCart = () => {
     const token = localStorage.getItem('token');
     if (!token) return setLoading(false);
     fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
@@ -19,7 +25,13 @@ const Cart = () => {
         setCart(data);
         setLoading(false);
       });
+  };
+  useEffect(() => {
+    fetchCart();
   }, []);
+
+  // Listen for cart updates (optional: use a custom event or context for real-time updates)
+  window.refreshCart = fetchCart;
 
   return (
     <div className="min-h-screen flex flex-col">

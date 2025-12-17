@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import AddToCartButton from '@/components/AddToCartButton';
 
 const Home = () => {
   const { user, loading, signOut } = useAuth();
@@ -9,6 +10,7 @@ const Home = () => {
   const [username, setUsername] = useState<string>('');
   const [emailVerified, setEmailVerified] = useState<boolean | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -36,6 +38,24 @@ const Home = () => {
     };
 
     fetchProfile();
+  }, [user]);
+
+  useEffect(() => {
+    // Fetch products for the user
+    const fetchProducts = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('user_id', user.id);
+
+        if (data && !error) {
+          setProducts(data);
+        }
+      }
+    };
+
+    fetchProducts();
   }, [user]);
 
   const handleSignOut = async () => {
@@ -112,6 +132,33 @@ const Home = () => {
                 <p className="text-foreground font-medium">{user.email}</p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Products Section */}
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold text-foreground mb-4">
+            Your Products
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {products.map(product => (
+              <div key={product._id} className="bg-card border border-border rounded-lg p-4">
+                <img
+                  src={product.image || '/placeholder.svg'}
+                  alt={product.name}
+                  className="w-full h-40 object-cover rounded-md mb-4"
+                />
+                <div className="text-center">
+                  <div className="text-lg font-semibold text-foreground mb-2">
+                    {product.name}
+                  </div>
+                  <div className="text-primary font-bold text-xl mb-4">
+                    ${product.price}
+                  </div>
+                  <AddToCartButton productId={product._id} onAdded={() => { /* Optionally show a message or update state */ }} />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </main>

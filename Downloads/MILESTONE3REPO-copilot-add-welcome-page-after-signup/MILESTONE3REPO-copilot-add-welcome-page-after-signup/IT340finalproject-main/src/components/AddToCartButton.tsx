@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-const AddToCartButton = ({ productId }) => {
+const AddToCartButton = ({ productId, onAdded }) => {
   const [added, setAdded] = useState(false);
 
   const handleAdd = async () => {
@@ -19,6 +19,7 @@ const AddToCartButton = ({ productId }) => {
       body: JSON.stringify({ productId })
     });
     setAdded(true);
+    if (onAdded) onAdded();
     setTimeout(() => setAdded(false), 1200);
   };
 

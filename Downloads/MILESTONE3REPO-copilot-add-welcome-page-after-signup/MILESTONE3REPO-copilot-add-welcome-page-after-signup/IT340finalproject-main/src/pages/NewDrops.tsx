@@ -23,21 +23,25 @@ const NewDrops = () => {
 					</Button>
 				</div>
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-					{products.slice(0, 6).map((product) => (
+					{products.slice(0, 8).map((product) => (
 						<div
 							key={product._id}
 							className="bg-card border border-border rounded-lg shadow-elegant p-4 flex flex-col items-center"
 						>
 							<img
-								src={product.image}
+								src={product.image || '/placeholder.svg'}
 								alt={product.name}
 								className="w-40 h-40 object-cover mb-4 rounded-md"
+								onError={(e) => {
+									e.currentTarget.onerror = null;
+									e.currentTarget.src = '/placeholder.svg';
+								}}
 							/>
 							<div className="font-semibold text-lg mb-2">{product.name}</div>
-							<div className="text-primary text-xl font-bold">
+							<div className="text-primary text-xl font-bold mb-2">
 								${product.price}
 							</div>
-							<AddToCartButton productId={product._id} />
+							<AddToCartButton productId={product._id} onAdded={() => {}} />
 						</div>
 					))}
 				</div>

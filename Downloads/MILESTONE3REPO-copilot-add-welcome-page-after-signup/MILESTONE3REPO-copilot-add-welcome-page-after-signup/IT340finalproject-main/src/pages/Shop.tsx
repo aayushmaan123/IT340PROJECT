@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Filter, ChevronDown, X } from 'lucide-react';
+import AddToCartButton from '@/components/AddToCartButton';
 
 import sneaker1 from '@/assets/sneaker-1.jpg';
 import sneaker2 from '@/assets/sneaker-2.jpg';
@@ -377,7 +378,7 @@ const Shop = () => {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {filteredProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
@@ -402,6 +403,7 @@ const Shop = () => {
                             src={product.image}
                             alt={product.name}
                             className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                            onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/placeholder.svg'; }}
                           />
                         </div>
                       </div>
@@ -423,14 +425,7 @@ const Shop = () => {
                               </span>
                             )}
                           </div>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="hover:bg-secondary transition-all duration-200"
-                            aria-label={`Add ${product.name} to cart`}
-                          >
-                            <ShoppingCart className="h-5 w-5" />
-                          </Button>
+                          <AddToCartButton productId={product.id} onAdded={() => {}} />
                         </div>
                       </div>
                     </CardContent>
