@@ -210,10 +210,10 @@ const Shop = () => {
 												)}
 												<div className="aspect-square overflow-hidden bg-gradient-card">
 													<img
-														src={product.image ? product.image : '/placeholder.svg'}
+														src={product.image ? product.image : '/puma-fallback.jpg'}
 														alt={product.name}
 														className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-														onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/placeholder.svg'; }}
+														onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = '/puma-fallback.jpg'; }}
 													/>
 												</div>
 											</div>

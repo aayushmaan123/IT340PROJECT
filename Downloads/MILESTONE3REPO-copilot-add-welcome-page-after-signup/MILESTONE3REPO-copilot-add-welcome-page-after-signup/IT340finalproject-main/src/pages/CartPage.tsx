@@ -63,7 +63,7 @@ const CartPage = () => {
                   transition={{ duration: 0.4 }}
                   className="bg-card border border-border rounded-lg shadow-elegant p-4 flex flex-col items-center relative"
                 >
-                  <img src={item.productId.image || '/images/shoes/placeholder.jpg'} alt={item.productId.name} className="w-40 h-40 object-cover mb-4 rounded-md" />
+                  <img src={item.productId.image ? item.productId.image : '/puma-fallback.jpg'} alt={item.productId.name} className="w-40 h-40 object-cover mb-4 rounded-md" />
                   <div className="font-semibold text-lg mb-2">{item.productId.name}</div>
                   <div className="text-primary text-xl font-bold mb-2">${item.productId.price}</div>
                   <div className="mb-2">Quantity: {item.quantity}</div>
