@@ -1,176 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Filter, ChevronDown, X } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
 import AddToCartButton from '@/components/AddToCartButton';
 
-import sneaker1 from '@/assets/sneaker-1.jpg';
-import sneaker2 from '@/assets/sneaker-2.jpg';
-import sneaker3 from '@/assets/sneaker-3.jpg';
-import sneaker4 from '@/assets/sneaker-4.jpg';
-import sneaker5 from '@/assets/sneaker-5.jpg';
-import sneaker6 from '@/assets/sneaker-6.jpg';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  originalPrice?: number;
-  image: string;
-  tag?: string;
-  category: string;
-}
-
-const allProducts: Product[] = [
-  {
-    id: 1,
-    name: 'Sky Force Elite',
-    description: 'Premium comfort meets street style',
-    price: 189,
-    image: sneaker1,
-    tag: 'New',
-    category: 'Running',
-  },
-  {
-    id: 2,
-    name: 'Velocity Pro',
-    description: 'Engineered for peak performance',
-    price: 159,
-    image: sneaker2,
-    tag: 'Popular',
-    category: 'Athletic',
-  },
-  {
-    id: 3,
-    name: 'Cloud Walker',
-    description: 'Walk on clouds, look like fire',
-    price: 229,
-    image: sneaker3,
-    tag: 'Limited',
-    category: 'Lifestyle',
-  },
-  {
-    id: 4,
-    name: 'Retro Legend',
-    description: 'Classic design, modern comfort',
-    price: 149,
-    originalPrice: 199,
-    image: sneaker4,
-    tag: 'Sale',
-    category: 'Retro',
-  },
-  {
-    id: 5,
-    name: 'Tech Runner',
-    description: 'Future-forward technology',
-    price: 249,
-    image: sneaker5,
-    tag: 'New',
-    category: 'Running',
-  },
-  {
-    id: 6,
-    name: 'Classic Luxe',
-    description: 'Timeless elegance redefined',
-    price: 179,
-    image: sneaker6,
-    tag: 'Popular',
-    category: 'Lifestyle',
-  },
-  {
-    id: 7,
-    name: 'Urban Street',
-    description: 'Own the streets in style',
-    price: 169,
-    image: sneaker1,
-    category: 'Lifestyle',
-  },
-  {
-    id: 8,
-    name: 'Sprint Master',
-    description: 'Built for speed and agility',
-    price: 199,
-    image: sneaker2,
-    category: 'Athletic',
-  },
-  {
-    id: 9,
-    name: 'Air Flow Max',
-    description: 'Maximum breathability and comfort',
-    price: 219,
-    image: sneaker3,
-    tag: 'New',
-    category: 'Running',
-  },
-  {
-    id: 10,
-    name: 'Heritage Classic',
-    description: 'Vintage style, modern soul',
-    price: 139,
-    originalPrice: 189,
-    image: sneaker4,
-    tag: 'Sale',
-    category: 'Retro',
-  },
-  {
-    id: 11,
-    name: 'Dynamic Flex',
-    description: 'Flex with every move',
-    price: 179,
-    image: sneaker5,
-    category: 'Athletic',
-  },
-  {
-    id: 12,
-    name: 'Comfort Zone',
-    description: 'All-day comfort guaranteed',
-    price: 159,
-    image: sneaker6,
-    tag: 'Popular',
-    category: 'Lifestyle',
-  },
-  {
-    id: 13,
-    name: 'Speed Racer',
-    description: 'Designed for champions',
-    price: 269,
-    image: sneaker1,
-    tag: 'Limited',
-    category: 'Running',
-  },
-  {
-    id: 14,
-    name: 'Court Classic',
-    description: 'From the court to the street',
-    price: 189,
-    image: sneaker2,
-    category: 'Athletic',
-  },
-  {
-    id: 15,
-    name: 'Urban Wanderer',
-    description: 'Explore the city in style',
-    price: 149,
-    image: sneaker3,
-    category: 'Lifestyle',
-  },
-  {
-    id: 16,
-    name: 'Throwback 90s',
-    description: 'Nostalgia meets innovation',
-    price: 129,
-    originalPrice: 169,
-    image: sneaker4,
-    tag: 'Sale',
-    category: 'Retro',
-  },
-];
-
-const categories = ['All', 'Running', 'Athletic', 'Lifestyle', 'Retro'];
 const priceRanges = [
   { label: 'All Prices', min: 0, max: Infinity },
   { label: 'Under $150', min: 0, max: 150 },
@@ -180,20 +16,21 @@ const priceRanges = [
 ];
 
 const Shop = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [products, setProducts] = useState([]);
   const [selectedPriceRange, setSelectedPriceRange] = useState(0);
   const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high' | 'newest'>('featured');
   const [showFilters, setShowFilters] = useState(false);
 
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/products`)
+      .then(res => res.json())
+      .then(data => setProducts(data));
+  }, []);
+
   const filteredProducts = useMemo(() => {
-    let filtered = [...allProducts];
+    let filtered = [...products];
 
-    // Filter by category
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(p => p.category === selectedCategory);
-    }
-
-    // Filter by price range
+    // Filter by price range only
     const range = priceRanges[selectedPriceRange];
     filtered = filtered.filter(p => p.price >= range.min && p.price < range.max);
 
@@ -207,9 +44,9 @@ const Shop = () => {
     }
 
     return filtered;
-  }, [selectedCategory, selectedPriceRange, sortBy]);
+  }, [products, selectedPriceRange, sortBy]);
 
-  const activeFiltersCount = (selectedCategory !== 'All' ? 1 : 0) + (selectedPriceRange !== 0 ? 1 : 0);
+  const activeFiltersCount = selectedPriceRange !== 0 ? 1 : 0;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -258,21 +95,6 @@ const Shop = () => {
                   </span>
                 )}
               </Button>
-              
-              {/* Category Pills */}
-              <div className="flex items-center gap-2 flex-wrap">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={category === selectedCategory ? 'default' : 'ghost'}
-                    size="sm"
-                    className="font-light"
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
             </div>
 
             {/* Sort Dropdown */}
@@ -318,22 +140,11 @@ const Shop = () => {
                   </div>
                 </div>
 
-                {/* Active Filters Summary */}
+                {/* Active Filters Summary (price only) */}
                 {activeFiltersCount > 0 && (
                   <div>
                     <h3 className="text-sm font-medium mb-3">Active Filters</h3>
                     <div className="flex flex-wrap gap-2">
-                      {selectedCategory !== 'All' && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm">
-                          Category: {selectedCategory}
-                          <button
-                            onClick={() => setSelectedCategory('All')}
-                            className="hover:text-foreground transition-colors"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </span>
-                      )}
                       {selectedPriceRange !== 0 && (
                         <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm">
                           {priceRanges[selectedPriceRange].label}
@@ -370,7 +181,6 @@ const Shop = () => {
               <Button 
                 variant="outline"
                 onClick={() => {
-                  setSelectedCategory('All');
                   setSelectedPriceRange(0);
                 }}
               >
@@ -381,7 +191,7 @@ const Shop = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {filteredProducts.map((product, index) => (
                 <motion.div
-                  key={product.id}
+                  key={product._id}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05, duration: 0.5 }}
@@ -425,7 +235,7 @@ const Shop = () => {
                               </span>
                             )}
                           </div>
-                          <AddToCartButton productId={product.id} onAdded={() => {}} />
+                          <AddToCartButton productId={product._id} onAdded={() => { if (window.refreshCart) window.refreshCart(); }} />
                         </div>
                       </div>
                     </CardContent>
