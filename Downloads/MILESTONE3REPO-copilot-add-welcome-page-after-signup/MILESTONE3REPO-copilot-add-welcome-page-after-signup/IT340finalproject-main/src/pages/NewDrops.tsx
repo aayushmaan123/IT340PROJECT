@@ -29,7 +29,7 @@ const NewDrops = () => {
 							className="bg-card border border-border rounded-lg shadow-elegant p-4 flex flex-col items-center"
 						>
 							<img
-								src={product.image || '/placeholder.svg'}
+								src={product.image ? product.image : '/placeholder.svg'}
 								alt={product.name}
 								className="w-40 h-40 object-cover mb-4 rounded-md"
 								onError={(e) => {

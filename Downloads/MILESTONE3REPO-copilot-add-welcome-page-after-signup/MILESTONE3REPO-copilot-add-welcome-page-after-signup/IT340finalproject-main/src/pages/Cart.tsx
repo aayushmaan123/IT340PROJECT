@@ -46,7 +46,7 @@ const Cart = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {cart.items.map((item) => (
               <div key={item.productId?._id || item.productId} className="bg-card border border-border rounded-lg shadow-elegant p-4 flex flex-col items-center">
-                <img src={item.productId?.image || placeholder} alt={item.productId?.name || 'Product'} className="w-40 h-40 object-cover mb-4 rounded-md" onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = placeholder; }} />
+                <img src={item.productId?.image ? item.productId.image : placeholder} alt={item.productId?.name || 'Product'} className="w-40 h-40 object-cover mb-4 rounded-md" onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = placeholder; }} />
                 <div className="font-semibold text-lg mb-2">{item.productId?.name || 'Product'}</div>
                 <div className="text-primary text-xl font-bold">Qty: {item.quantity}</div>
                 <Button size="sm" className="mt-2">Buy Now</Button>
