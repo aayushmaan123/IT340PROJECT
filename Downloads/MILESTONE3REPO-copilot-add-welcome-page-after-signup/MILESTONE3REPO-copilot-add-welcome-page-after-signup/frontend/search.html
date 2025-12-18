@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Results</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Include navbar here -->
+  <div id="results" class="container" style="margin-top:40px;"></div>
+  <script>
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name) || '';
+    }
+    const q = getQueryParam('q');
+    const resultsDiv = document.getElementById('results');
+    if (!q) {
+      resultsDiv.innerHTML = '<p>No products found</p>';
+    } else {
+      fetch('/api/products/search?q=' + encodeURIComponent(q))
+        .then(res => res.json())
+        .then(products => {
+          if (!products.length) {
+            resultsDiv.innerHTML = '<p>No products found</p>';
+            return;
+          }
+          resultsDiv.innerHTML = '<h2>Search Results for "' + q + '"</h2>';
+          resultsDiv.innerHTML += '<div id="productGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:24px;"></div>';
+          const grid = document.getElementById('productGrid');
+          products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+              <img src="${product.image}" alt="${product.name}" style="width:100%;height:180px;object-fit:cover;border-radius:8px;">
+              <div style="font-weight:bold;margin:8px 0 4px 0;">${product.name}</div>
+              <div style="color:#333;">$${product.price}</div>
+              <button onclick="addToCart('${product._id}')" style="margin-top:8px;padding:6px 12px;border-radius:4px;background:#222;color:#fff;border:none;cursor:pointer;">Add to Cart</button>
+            `;
+            grid.appendChild(card);
+          });
+        });
+    }
+    function addToCart(productId) {
+      const token = localStorage.getItem('token');
+      if (!token) { alert('Please log in to add to cart'); return; }
+      fetch('/api/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ productId })
+      }).then(() => alert('Added to cart!'));
+    }
+  </script>
+</body>
+</html>
