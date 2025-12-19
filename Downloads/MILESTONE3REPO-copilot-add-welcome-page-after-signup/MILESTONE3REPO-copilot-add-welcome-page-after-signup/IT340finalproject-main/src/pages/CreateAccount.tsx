@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LoginInput } from '@/components/ui/login-form';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 import sneakerBg from '@/assets/sneaker-4.jpg';
-import { toast } from 'sonner';
 
 const CreateAccount = () => {
   const navigate = useNavigate();
+  const { signUp, user, loading } = useAuth();
+  const { toast } = useToast();
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,7 +23,14 @@ const CreateAccount = () => {
     password: '',
     confirmPassword: ''
   });
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/home');
+    }
+  }, [user, loading, navigate]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -52,8 +62,20 @@ const CreateAccount = () => {
     if (!formData.password) {
       newErrors.password = 'Password is required';
       isValid = false;
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+      isValid = false;
+    } else if (!/[A-Z]/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one uppercase letter';
+      isValid = false;
+    } else if (!/[a-z]/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one lowercase letter';
+      isValid = false;
+    } else if (!/[0-9]/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one number';
+      isValid = false;
+    } else if (!/[^A-Za-z0-9]/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one special character';
       isValid = false;
     }
 
@@ -71,31 +93,26 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      setLoading(true);
-      try {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: formData.fullName,
-            email: formData.email,
-            password: formData.password
-          })
-        });
-        const data = await res.json();
-        if (res.ok && data.username && data.token) {
-          localStorage.setItem('token', data.token);
-          navigate('/welcome', { state: { username: data.username } });
-        } else {
-          toast("Check Your Email. We've sent you a confirmation link. Please check your email to verify your account.");
+    
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+
+    const { error } = await signUp(formData.email, formData.password, formData.fullName);
+
+    if (error) {
+      toast({
+        title: "Signup Failed",
+        description: error.message || "Could not create account",
+        variant: "destructive"
+      });
+      setIsSubmitting(false);
+    } else {
+      toast({
+        title: "Check Your Email",
+        description: "We've sent you a confirmation link. Please check your email to verify your account."
+      });
       navigate('/verify-email', { state: { email: formData.email } });
-        }
-      } catch (error) {
-        console.error('Error during signup:', error);
-      } finally {
-        setLoading(false);
-      }
     }
   };
 
@@ -105,6 +122,14 @@ const CreateAccount = () => {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-foreground">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
@@ -186,10 +211,10 @@ const CreateAccount = () => {
               <div className='flex gap-4 justify-center items-center mt-4'>
                 <button 
                   type="submit"
-                  className="group/button relative inline-flex justify-center items-center overflow-hidden rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-primary/50 cursor-pointer"
-                  disabled={loading}
+                  disabled={isSubmitting}
+                  className="group/button relative inline-flex justify-center items-center overflow-hidden rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-medium transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-primary/50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className="relative z-10">{loading ? 'Creating Account...' : 'Create Account'}</span>
+                  <span className="relative z-10">{isSubmitting ? 'Creating...' : 'Create Account'}</span>
                   <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]">
                     <div className="relative h-full w-8 bg-white/20" />
                   </div>
