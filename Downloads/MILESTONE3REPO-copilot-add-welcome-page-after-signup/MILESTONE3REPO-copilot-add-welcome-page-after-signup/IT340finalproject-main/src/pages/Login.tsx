@@ -27,7 +27,11 @@ const Login = () => {
       body: JSON.stringify(form)
     });
     const data = await res.json();
-    if (res.ok && data.token) {
+    if (res.ok && data.requiresOTP) {
+      // Redirect to OTP verification page
+      navigate('/verify-otp', { state: { userId: data.userId } });
+    } else if (res.ok && data.token) {
+      // Fallback: if no MFA, directly login (for backwards compatibility)
       localStorage.setItem('token', data.token);
       setUsername(data.username || '');
       navigate('/welcome', { state: { username: data.username } });
