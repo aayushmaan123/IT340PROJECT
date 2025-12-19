@@ -1,15 +1,16 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const User = require('../models/User');
 const verifyToken = require('../middleware/verifyToken');
 const { sendOTP } = require('../utils/smsService');
 
 const router = express.Router();
 
-// Helper function to generate 5-digit OTP
+// Helper function to generate 5-digit OTP using cryptographically secure random
 function generateOTP() {
-  return Math.floor(10000 + Math.random() * 90000).toString();
+  return crypto.randomInt(10000, 100000).toString();
 }
 
 // POST /api/auth/signup

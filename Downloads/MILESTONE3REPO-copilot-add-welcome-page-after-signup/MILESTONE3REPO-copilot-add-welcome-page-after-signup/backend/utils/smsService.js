@@ -5,7 +5,7 @@ const sendOTP = async (phoneNumber, otp) => {
   const twilioEnabled = process.env.TWILIO_ENABLED === 'true';
 
   if (twilioEnabled) {
-    // Send SMS using Twilio
+    // Send SMS using Twilio - import only when needed
     try {
       const twilio = require('twilio');
       const client = twilio(
