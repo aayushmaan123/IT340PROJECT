@@ -12,13 +12,15 @@ const CreateAccount = () => {
     fullName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    phoneNumber: ''
   });
   const [errors, setErrors] = useState({
     fullName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    phoneNumber: ''
   });
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +34,8 @@ const CreateAccount = () => {
       fullName: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      phoneNumber: ''
     };
     let isValid = true;
 
@@ -46,6 +49,14 @@ const CreateAccount = () => {
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
+      isValid = false;
+    }
+
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = 'Phone number is required';
+      isValid = false;
+    } else if (!/^\+?[\d\s\-()]+$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = 'Phone number is invalid (e.g., +1234567890)';
       isValid = false;
     }
 
@@ -80,16 +91,16 @@ const CreateAccount = () => {
           body: JSON.stringify({
             username: formData.fullName,
             email: formData.email,
-            password: formData.password
+            password: formData.password,
+            phoneNumber: formData.phoneNumber
           })
         });
         const data = await res.json();
-        if (res.ok && data.username && data.token) {
-          localStorage.setItem('token', data.token);
-          navigate('/welcome', { state: { username: data.username } });
+        if (res.ok) {
+          toast.success(data.message || 'Account created successfully! Please login.');
+          navigate('/login');
         } else {
-          toast("Check Your Email. We've sent you a confirmation link. Please check your email to verify your account.");
-      navigate('/verify-email', { state: { email: formData.email } });
+          toast.error(data.message || 'Signup failed');
         }
       } catch (error) {
         console.error('Error during signup:', error);
@@ -156,6 +167,18 @@ const CreateAccount = () => {
                   />
                   {errors.email && (
                     <p className="text-destructive text-xs mt-1 text-left">{errors.email}</p>
+                  )}
+                </div>
+                <div>
+                  <LoginInput 
+                    placeholder="Phone Number (e.g., +1234567890)" 
+                    type="tel" 
+                    value={formData.phoneNumber}
+                    onChange={(e) => handleChange('phoneNumber', e.target.value)}
+                    required 
+                  />
+                  {errors.phoneNumber && (
+                    <p className="text-destructive text-xs mt-1 text-left">{errors.phoneNumber}</p>
                   )}
                 </div>
                 <div>
